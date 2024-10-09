@@ -1,0 +1,10 @@
+---
+- name: Simple playbook to add users to a Rocky host
+  hosts: LL-rocky9-01
+  gather_facts: false
+  vars:
+  tasks:
+    - name: Add users to the Rocky host
+      ansible.builtin.user:
+        name: test1
+        state: present
