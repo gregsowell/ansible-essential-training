@@ -1,0 +1,16 @@
+---
+- name: Check RAM on a Rocky host
+  hosts: LL-rocky9-01
+  # gather_facts: false
+  vars:
+      
+  tasks:
+    - name: Assert if RAM is at least 1GB
+      ansible.builtin.assert:
+        that: ansible_memtotal_mb >= 1000
+        msg: "RAM is less than 1GB"
+
+    - name: Assert if RAM is at least 10GB
+      ansible.builtin.assert:
+        that: ansible_memtotal_mb >= 10000
+        msg: "RAM is less than 10GB"

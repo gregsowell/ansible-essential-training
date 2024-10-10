@@ -1,0 +1,9 @@
+- name: Check for a user with the id command
+  ansible.builtin.command: "id {{ user }}"
+  register: user_id
+  changed_when: false
+  failed_when: false
+
+- name: Print out info on the user
+  ansible.builtin.debug:
+    msg: "{{ user_id.stdout_lines | default('User not found') }}"
