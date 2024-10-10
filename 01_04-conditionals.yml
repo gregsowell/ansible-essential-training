@@ -19,3 +19,4 @@
         name: "{{ item }}"
         state: present
       loop: "{{ new_user }}"
+      become: true

@@ -8,3 +8,4 @@
       ansible.builtin.user:
         name: test1
         state: present
+      become: true

@@ -1,13 +1,15 @@
 ---
 - name: Add/configure nginx webserver on a Rocky host
   hosts: LL-rocky9-01
-  gather_facts: false
+  # gather_facts: false
+  become: true
   vars:
     owner_name: Greg Sowell
+    web_path: /home/webserver
     
   tasks:
     - name: Block for rocky hosts
-      when: "'rocky' in ansible_facts['distribution']"
+      when: "'Rocky' in ansible_facts['distribution']"
       block:
         - name: Install nginx webserver
           ansible.builtin.dnf:
@@ -20,7 +22,7 @@
             state: started
 
     - name: Block for ubuntu hosts
-      when: "'ubuntu' in ansible_facts['distribution']"
+      when: "'Ubuntu' in ansible_facts['distribution']"
       block:
         - name: Install nginx webserver
           ansible.builtin.apt:
@@ -34,7 +36,7 @@
 
     - name: Create /home/webserver directory
       ansible.builtin.file:
-        path: /home/webserver
+        path: "{{ web_path }}"
         state: directory
         owner: nginx
         group: nginx
@@ -43,7 +45,7 @@
     - name: Add index.html to webserver directory
       ansible.builtin.template:
         src: templates/index.html.j2
-        dest: /home/webserver/index.html
+        dest: "{{ web_path }}/index.html"
         owner: nginx
         group: nginx
         mode: '0644'

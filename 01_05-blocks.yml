@@ -1,12 +1,17 @@
 ---
 - name: Add nginx webserver to a Rocky host
   hosts: LL-rocky9-01
-  gather_facts: false
+  # gather_facts: false
+  become: true
   vars:
 
   tasks:
+    # - name: debug ansible_facts
+    #   ansible.builtin.debug:
+    #     var: ansible_facts
+
     - name: Block for rocky hosts
-      when: "'rocky' in ansible_facts['distribution']"
+      when: "'Rocky' in ansible_facts['distribution']"
       block:
         - name: Install nginx webserver
           ansible.builtin.dnf:
@@ -19,7 +24,7 @@
             state: started
 
     - name: Block for ubuntu hosts
-      when: "'ubuntu' in ansible_facts['distribution']"
+      when: "'Ubuntu' in ansible_facts['distribution']"
       block:
         - name: Install nginx webserver
           ansible.builtin.apt:

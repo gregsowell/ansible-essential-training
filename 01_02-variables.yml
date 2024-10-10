@@ -11,5 +11,6 @@
       ansible.builtin.user:
         name: "{{ new_user }}"
         state: present
+      become: true
       vars:
         new_user: test1
