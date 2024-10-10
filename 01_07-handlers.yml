@@ -20,6 +20,8 @@
             name: nginx
             enabled: yes
             state: started
+      tags: 
+        - install
 
     - name: Block for ubuntu hosts
       when: "'ubuntu' in ansible_facts['distribution']"
@@ -35,6 +37,8 @@
             name: nginx
             enabled: yes
             state: started
+      tags: 
+        - install
 
     - name: Create /home/webserver directory
       ansible.builtin.file:
@@ -43,6 +47,8 @@
         owner: nginx
         group: nginx
         mode: '0755'
+      tags: 
+        - configure
 
     - name: Add index.html to webserver directory
       ansible.builtin.template:
@@ -51,6 +57,8 @@
         owner: nginx
         group: nginx
         mode: '0644'
+      tags: 
+        - configure
 
     - name: Add nginx config based on template
       ansible.builtin.template:
@@ -60,6 +68,8 @@
         group: nginx
         mode: '0644'
       notify: Restart nginx
+      tags: 
+        - configure
 
   handlers:
     - name: Restart nginx service when nginx config changes
