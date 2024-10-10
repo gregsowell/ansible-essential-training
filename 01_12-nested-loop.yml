@@ -1,37 +1,24 @@
 ---
-- name: Check for a user on a Rocky host
+- name: Looping though users and finding out how many files they own
   hosts: LL-rocky9-01
   gather_facts: false
   vars:
-    check_user:
-      - greg
-      - test1
-
+    match_user:
+      - root
+      - tss
   tasks:
-    - name: Loop through users and call a task file
-      ansible.builtin.include_tasks: tasks/01_12-inner-loop.yml
-      loop: "{{ check_user }}"
+    - name: Gather list of users from the linux server using the shell module
+      ansible.builtin.shell: 'cat /etc/passwd | cut -d: -f1'
+      register: users
+      changed_when: false
+        
+    - name: Outer loop - we go over our main loop and call a task file
+#      when: 'current_user in match_user'
+      include_tasks: tasks/inner-loop.yml
+      loop: "{{ users.stdout_lines }}"
       loop_control:
-        loop_var: user
+        loop_var: current_user
 
-    - name: Check for a user with the id command
-      ansible.builtin.command: id greg
-      register: user_id
-      changed_when: false
-      failed_when: false
-
-    - name: Print out info on the user
+    - name: Debug total_files variable
       ansible.builtin.debug:
-        msg: "{{ user_id.stdout_lines | default('User not found') }}"
-      # when: check_user | intersect(user_id.stdout_lines) | length > 0
-
-    - name: Check for a user with the id command
-      ansible.builtin.command: id test1
-      register: user_id
-      changed_when: false
-      failed_when: false
-
-    - name: Print out info on the user
-      ansible.builtin.debug:
-        msg: "{{ user_id.stdout_lines | default('User not found') }}"
-      # when: check_user | intersect(user_id.stdout_lines) | length > 0
+        var: total_files

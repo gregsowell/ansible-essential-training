@@ -1,9 +1,38 @@
-- name: Check for a user with the id command
-  ansible.builtin.command: "id {{ user }}"
-  register: user_id
-  changed_when: false
-  failed_when: false
+---
+- name: Block for tss found files
+  when: current_user == "tss"
+  ignore_errors: true
+  block:
+    - name: Files owned by tss user
+      ansible.builtin.shell: "find / -user {{ current_user }}"
+      register: found_files
+      changed_when: false
+      failed_when: false
 
-- name: Print out info on the user
-  ansible.builtin.debug:
-    msg: "{{ user_id.stdout_lines | default('User not found') }}"
+    - name: Examine file permissions for found_files.stdout_lines
+      ansible.builtin.shell: "ls -la {{ item }}"
+      loop: "{{ found_files.stdout_lines }}"
+      register: file_permissions_check
+      changed_when: false
+
+    - name: debug file_permissions_check variable
+      when: file_permissions_check.results[0].stdout | default("") != ""
+      set_fact:
+        show_file_permissions: "{{ show_file_permissions | default([]) + [item ~ ' - ' ~ file_permissions_check.results[0].stdout_lines[ansible_loop.index]] }}"
+      loop: "{{ found_files.stdout_lines }}"
+      loop_control:
+        extended: true
+
+    - name: Debug show_file_permissions variable
+      ansible.builtin.debug:
+        var: show_file_permissions
+
+- name: Count of files owned by this user
+  ansible.builtin.shell: "find / -user {{ current_user }} | wc -l"
+  register: files_count
+  changed_when: false
+
+- name: "Add additional items to the total_files list for {{ current_user }}"
+  set_fact:
+    total_files: "{{ total_files | default([]) + [current_user ~ ' - ' ~ files_count.stdout] }}"
+  when: files_count.stdout != "0"
