@@ -5,6 +5,10 @@
   vars:
       
   tasks:
+    - name: Display ansible_memtotal_mb
+      ansible.builtin.debug:
+        var: ansible_memtotal_mb
+    
     - name: Assert if RAM is at least 1GB
       ansible.builtin.assert:
         that: ansible_memtotal_mb >= 1000
