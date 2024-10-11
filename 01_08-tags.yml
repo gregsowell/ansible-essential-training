@@ -1,13 +1,15 @@
 ---
 - name: Add/configure nginx webserver on a Rocky host
   hosts: LL-rocky9-01
-  gather_facts: false
+  # gather_facts: false
+  become: true
   vars:
     owner_name: Greg Sowell
+    web_path: /home/webserver
     
   tasks:
     - name: Block for rocky hosts
-      when: "'rocky' in ansible_facts['distribution']"
+      when: "'Rocky' in ansible_facts['distribution']"
       block:
         - name: Install nginx webserver
           ansible.builtin.dnf:
@@ -20,11 +22,10 @@
             name: nginx
             enabled: yes
             state: started
-      tags: 
-        - install
+      tags: install
 
     - name: Block for ubuntu hosts
-      when: "'ubuntu' in ansible_facts['distribution']"
+      when: "'Ubuntu' in ansible_facts['distribution']"
       block:
         - name: Install nginx webserver
           ansible.builtin.apt:
@@ -37,8 +38,7 @@
             name: nginx
             enabled: yes
             state: started
-      tags: 
-        - install
+      tags: install
 
     - name: Create /home/webserver directory
       ansible.builtin.file:
@@ -47,8 +47,7 @@
         owner: nginx
         group: nginx
         mode: '0755'
-      tags: 
-        - configure
+      tags: configure
 
     - name: Add index.html to webserver directory
       ansible.builtin.template:
@@ -57,8 +56,7 @@
         owner: nginx
         group: nginx
         mode: '0644'
-      tags: 
-        - configure
+      tags: configure
 
     - name: Add nginx config based on template
       ansible.builtin.template:
@@ -68,12 +66,10 @@
         group: nginx
         mode: '0644'
       notify: Restart nginx
-      tags: 
-        - configure
-
+      tags: configure
+      
   handlers:
-    - name: Restart nginx service when nginx config changes
-      when: nginx_config.changed
+    - name: Restart nginx
       ansible.builtin.systemd:
         name: nginx
         state: restarted
