@@ -10,6 +10,7 @@
     - name: Add users to the Rocky host
       ansible.builtin.user:
         name: "{{ new_user }}"
+        # name: "{{ hostvars[inventory_hostname].new_user }}"
         state: present
       become: true
       vars:
