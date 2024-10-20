@@ -14,7 +14,8 @@
 
   tasks:
     - name: Add users to the Rocky host
-      when: item not in ignore_users
+      # when: item not in ignore_users and ignore_users is defined
+      when: item not in ignore_users | default(omit)
       ansible.builtin.user:
         name: "{{ item }}"
         state: present
