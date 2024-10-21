@@ -62,6 +62,6 @@
     - name: Restart nginx service when nginx config changes
       when: nginx_config.changed
       ansible.builtin.service:
-      name: nginx
-      state: restarted
+        name: nginx
+        state: restarted
       
