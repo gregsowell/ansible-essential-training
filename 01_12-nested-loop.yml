@@ -4,9 +4,9 @@
   gather_facts: false
   become: true
   vars:
-    match_user:
-      - root
-      - tss
+    # match_user:
+    #   - root
+    #   - tss
 
   tasks:
     - name: Gather list of users from the linux server using the shell module
