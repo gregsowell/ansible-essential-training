@@ -15,13 +15,13 @@
       register: file_permissions_check
       changed_when: false
 
-    # - name: debug file_permissions_check variable
-    #   when: file_permissions_check.results[0].stdout | default("") != ""
-    #   set_fact:
-    #     show_file_permissions: "{{ show_file_permissions | default([]) + [item ~ ' - ' ~ file_permissions_check.results[0].stdout_lines[ansible_loop.index]] }}"
-    #   loop: "{{ found_files.stdout_lines }}"
-    #   loop_control:
-    #     extended: true
+    - name: Create file_permissions_check variable
+      when: file_permissions_check.results[0].stdout | default("") != ""
+      set_fact:
+        show_file_permissions: "{{ show_file_permissions | default([]) + [item ~ ' - ' ~ file_permissions_check.results[0].stdout_lines[ansible_loop.index]] }}"
+      loop: "{{ found_files.stdout_lines }}"
+      loop_control:
+        extended: true
 
     - name: Debug show_file_permissions variable
       ansible.builtin.debug:
