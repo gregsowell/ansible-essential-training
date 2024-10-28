@@ -1,0 +1,9 @@
+---
+- name: Dynamic inventory test
+  hosts: all
+  gather_facts: false
+  vars:
+  tasks:
+    - name: Print out the list of inventory hosts
+      ansible.builtin.debug:
+        var: groups['all']
