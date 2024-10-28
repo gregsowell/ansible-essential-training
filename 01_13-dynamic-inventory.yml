@@ -7,3 +7,4 @@
     - name: Print out the list of inventory hosts
       ansible.builtin.debug:
         var: groups['all']
+      run_once: true

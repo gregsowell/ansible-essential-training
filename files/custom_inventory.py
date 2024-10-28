@@ -3,7 +3,7 @@
 import json
 
 # Specify the path to the JSON payload file
-json_payload_file = 'json-payload'
+json_payload_file = 'files/json-payload'
 
 # Read the JSON payload from the file
 with open(json_payload_file, 'r') as file:
