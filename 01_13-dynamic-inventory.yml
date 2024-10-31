@@ -8,3 +8,5 @@
       ansible.builtin.debug:
         var: groups['all']
       run_once: true
+
+# ansible-playbook -i files/custom-inventory.py 01_13-dynamic-inventory.yml
