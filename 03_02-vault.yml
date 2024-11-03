@@ -1,0 +1,12 @@
+---
+- name: Vaulting example
+  hosts: LL-rocky9-01
+  gather_facts: false
+  become: true
+  vars_files:
+    - files/secrets.yml  # Encrypted file
+
+  tasks:
+    - name: Display the super_secret variable
+      ansible.builtin.debug:
+        var: super_secret
