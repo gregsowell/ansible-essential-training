@@ -1,0 +1,37 @@
+- name: Fetch current weather data for College Station, Texas
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get weather data for College Station, Texas
+      uri:
+        url: "https://api.weather.gov/points/30.6280,-96.3344"
+        method: GET
+        headers:
+          User-Agent: "Ansible-Weather-Script"
+        validate_certs: yes
+      register: weather_response
+
+    - name: Extract forecast URL from the response
+      set_fact:
+        forecast_url: "{{ weather_response.json.properties.forecast }}"
+
+    - name: Get detailed forecast data
+      uri:
+        url: "{{ forecast_url }}"
+        method: GET
+        headers:
+          User-Agent: "Ansible-Weather-Script"
+        validate_certs: yes
+      when: forecast_url is defined
+      register: forecast_response
+
+    - name: Display detailed forecast data
+      debug:
+        var: forecast_response.json
+
+    # - name: Print chance of rain tomorrow
+    #   ansible.builtin.debug:
+    #     msg: >-
+    #       Tomorrows chance of rain(percentage):
+    #       Morning: {{ (forecast_response.json.properties.periods | selectattr('number', 'equalto', 3) | list).0.probabilityOfPrecipitation.value | default(0, true) }} and
+    #       Afternoon: {{ (forecast_response.json.properties.periods | selectattr('number', 'equalto', 4) | list).0.probabilityOfPrecipitation.value | default(0, true) }}
