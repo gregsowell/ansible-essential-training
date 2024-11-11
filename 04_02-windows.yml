@@ -25,6 +25,6 @@
         # reboot_timeout: 3600
       register: update_output
 
-    - name: Print out the results
-      ansible.builtin.debug:
-        var: update_output
+    # - name: Print out the results
+    #   ansible.builtin.debug:
+    #     var: update_output
