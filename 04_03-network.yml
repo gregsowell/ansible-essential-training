@@ -1,0 +1,79 @@
+---
+- name: SNMP updates on a Cisco device
+  hosts: sw1
+  gather_facts: false
+  # ensure you have paramiko installed on the ansible server
+  # pip3 install --upgrade paramiko ansible-pylibssh
+  # update-crypto-policies --set LEGACY
+  vars:
+    parse_me: |
+      snmp-server user admin auth md5 0xe2bb3e2405ce601c5c3993262270ace5 priv 0xe2bb3e2405ce601c5c3993262270ace5 localizedkey engineID 128:0:0:9:3:0:80:86:135:240:25
+      snmp-server community private group network-admin
+      snmp-server community public group network-operator
+
+
+  tasks:
+    - name: Find current SNMP configuration
+      cisco.nxos.nxos_command:
+        commands: show run | inc snmp-ser
+      register: snmp_output
+
+    - name: Display current SNMP configuration
+      ansible.builtin.debug:
+        var: snmp_output.stdout_lines
+
+    - name: Configure SNMP with the config module
+      cisco.nxos.nxos_config:
+        lines:
+          - snmp-server community public 
+          - snmp-server community private
+          # - snmp-server community public group network-operator
+          # - snmp-server community private group network-admin
+
+##### Resource Module Replace Start
+    # - name: Replace snmp-server configurations
+    #   cisco.nxos.nxos_snmp_server:
+    #     config:
+    #       communities:
+    #         - name: public
+    #           group: network-operator
+    #         - name: private
+    #           group: network-admin
+    #       users:
+    #         auth:
+    #           - user: admin
+    #             authentication:
+    #               engine_id: "128:0:0:9:3:0:80:86:135:240:25"
+    #               algorithm: md5
+    #               password: "0xe2bb3e2405ce601c5c3993262270ace5"
+    #               localized_key: true
+    #               priv:
+    #                 privacy_password: "0xe2bb3e2405ce601c5c3993262270ace5"
+    #     state: replaced
+##### Resource Module Replace End
+
+##### Parsed Config Start #####
+    # - name: Parse externally provided snmp-server configuration
+    #   cisco.nxos.nxos_snmp_server:
+    #     running_config: "{{ parse_me }}"
+    #     state: parsed
+    #   register: parsed_config
+
+    # - name: Debug parsed_config
+    #   ansible.builtin.debug:
+    #     var: parsed_config
+
+    # - name: Replace snmp-server configurations
+    #   cisco.nxos.nxos_snmp_server:
+    #     config: "{{ parsed_config.parsed }}"
+    #     state: replaced
+##### Parsed Config End #####
+
+    - name: Find current SNMP configuration
+      cisco.nxos.nxos_command:
+        commands: show run | inc snmp-ser
+      register: snmp_output
+
+    - name: Display current SNMP configuration
+      ansible.builtin.debug:
+        var: snmp_output.stdout_lines
