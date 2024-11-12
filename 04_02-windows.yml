@@ -5,7 +5,7 @@
   # become: true
   vars_prompt:
     - name: "ansible_ssh_pass"
-      prompt: SSH password
+      prompt: Windows password
       private: true
 
   tasks:
