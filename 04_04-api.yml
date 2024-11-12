@@ -3,7 +3,7 @@
   gather_facts: false
   tasks:
     - name: Get weather data for College Station, Texas
-      uri:
+      ansible.builtin.uri:
         url: "https://api.weather.gov/points/30.6280,-96.3344"
         method: GET
         headers:
@@ -12,11 +12,11 @@
       register: weather_response
 
     - name: Extract forecast URL from the response
-      set_fact:
+      ansible.builtin.set_fact:
         forecast_url: "{{ weather_response.json.properties.forecast }}"
 
     - name: Get detailed forecast data
-      uri:
+      ansible.builtin.uri:
         url: "{{ forecast_url }}"
         method: GET
         headers:
@@ -26,7 +26,7 @@
       register: forecast_response
 
     - name: Display detailed forecast data
-      debug:
+      ansible.builtin.debug:
         var: forecast_response.json
 
     # - name: Print chance of rain tomorrow
