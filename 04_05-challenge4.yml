@@ -6,7 +6,7 @@
       ansible.builtin.uri:
         url: https://api.weather.gov/gridpoints/FWD/136,142/forecast
         method: GET
-        validate_certs: yes
+        validate_certs: true
       register: forecast_response
 
     - name: Display detailed forecast data
