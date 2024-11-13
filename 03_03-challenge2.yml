@@ -1,0 +1,12 @@
+---
+- name: Vaulting challenge
+  hosts: LL-rocky9-01
+  gather_facts: false
+  become: true
+  vars_files:
+    - my_secrets.yml
+
+  tasks:
+    - name: Display the lunch variable
+      ansible.builtin.debug:
+        var: lunch

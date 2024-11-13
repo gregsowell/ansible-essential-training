@@ -1,0 +1,43 @@
+---
+- name: 
+  hosts: LL-rocky9-01
+  # gather_facts: false
+  vars:
+    new_dirs:
+      - /tmp/test10
+      - /tmp/test11
+      - /tmp/test12
+      - /tmp/test13
+
+  tasks:
+    - name: Assert that the system has enough memory
+      ansible.builtin.assert:
+        that: ansible_memtotal_mb > 1000
+        fail_msg: "The system does not have enough memory < 1GB"
+        success_msg: "The system has enough memory > 1GB"
+
+    - name: Create directories based on new_dirs variable
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      loop: "{{ new_dirs }}"
+
+    - name: Create a file with specific content idempotently if ther eis a 3 in the dir name
+      when: "'3' in item"
+      ansible.builtin.copy:
+        dest: "{{ item }}/file.txt"
+        content: "This is the content of the file"
+      loop: "{{ new_dirs }}"
+
+    - name: Collect the contents of the new_dirs
+      ansible.builtin.shell: ls -l "{{ item }}"
+      loop: "{{ new_dirs }}"
+      register: ls_output
+      changed_when: false
+
+    - name: Display the contents of the new_dirs
+      when: item.stdout | length > 8
+      ansible.builtin.debug:
+        # msg: "{{ item.stdout }}"
+        var: item.stdout
+      loop: "{{ ls_output.results }}"
