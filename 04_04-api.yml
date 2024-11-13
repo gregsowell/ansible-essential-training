@@ -6,23 +6,15 @@
       ansible.builtin.uri:
         url: "https://api.weather.gov/points/30.6280,-96.3344"
         method: GET
-        headers:
-          User-Agent: "Ansible-Weather-Script"
         validate_certs: yes
       register: weather_response
 
-    - name: Extract forecast URL from the response
-      ansible.builtin.set_fact:
-        forecast_url: "{{ weather_response.json.properties.forecast }}"
 
     - name: Get detailed forecast data
       ansible.builtin.uri:
-        url: "{{ forecast_url }}"
+        url: "{{ weather_response.json.properties.forecast }}"
         method: GET
-        headers:
-          User-Agent: "Ansible-Weather-Script"
         validate_certs: yes
-      when: forecast_url is defined
       register: forecast_response
 
     - name: Display detailed forecast data

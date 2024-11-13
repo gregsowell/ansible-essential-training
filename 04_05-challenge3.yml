@@ -1,0 +1,14 @@
+- name: Fetch current weather data for Paris, Texas
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get detailed forecast data
+      ansible.builtin.uri:
+        url: https://api.weather.gov/gridpoints/FWD/136,142/forecast
+        method: GET
+        validate_certs: yes
+      register: forecast_response
+
+    - name: Display detailed forecast data
+      ansible.builtin.debug:
+        var: forecast_response.json
