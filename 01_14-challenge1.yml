@@ -30,7 +30,7 @@
       loop: "{{ new_dirs }}"
 
     - name: Collect the contents of the new_dirs
-      ansible.builtin.shell: ls -l "{{ item }}"
+      ansible.builtin.shell: "ls -l {{ item }}"
       loop: "{{ new_dirs }}"
       register: ls_output
       changed_when: false
