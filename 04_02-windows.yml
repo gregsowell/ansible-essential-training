@@ -28,3 +28,6 @@
     # - name: Print out the results
     #   ansible.builtin.debug:
     #     var: update_output
+
+    # - name: Clear all event logs
+    #   win_shell: wevtutil el | ForEach-Object { wevtutil cl $_ }
