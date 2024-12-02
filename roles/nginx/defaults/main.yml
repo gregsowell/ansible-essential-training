@@ -1,0 +1,4 @@
+---
+# defaults file for nginx
+owner_name: Greg Sowell
+web_path: /home/webserver

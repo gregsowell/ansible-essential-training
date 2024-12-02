@@ -1,0 +1,7 @@
+---
+# handlers file for nginx
+- name: Restart nginx
+  when: nginx_config.changed
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

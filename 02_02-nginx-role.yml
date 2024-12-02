@@ -1,0 +1,14 @@
+---
+- name: Add/configure nginx webserver on a Rocky host via roles
+  hosts: LL-rocky9-01
+  # gather_facts: false
+  become: true
+  vars:
+
+  # roles:
+  #   - nginx
+
+    tasks:
+      - name: Run nginx role
+        include_role:
+          name: nginx

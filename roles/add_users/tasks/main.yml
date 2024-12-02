@@ -1,0 +1,14 @@
+---
+# tasks file for add_users
+- name: Add users to the Rocky host
+  ansible.builtin.user:
+    # name: "{{ new_user}}"
+    name: "{{ item }}"
+    state: present
+  become: true
+  # vars:
+  #   new_user: test1
+  loop: "{{ new_user }}"
+    # - test1
+    # - test2
+    # - test3

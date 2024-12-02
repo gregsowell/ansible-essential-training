@@ -1,0 +1,53 @@
+---
+# tasks file for nginx
+- name: Block for rocky hosts
+  when: "'Rocky' in ansible_facts['distribution']"
+  block:
+    - name: Install nginx webserver
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+    - name: Start and enable nginx service
+      ansible.builtin.systemd:
+        name: nginx
+        enabled: yes
+        state: started
+
+- name: Block for ubuntu hosts
+  when: "'Ubuntu' in ansible_facts['distribution']"
+  block:
+    - name: Install nginx webserver
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+    - name: Start and enable nginx service
+      ansible.builtin.systemd:
+        name: nginx
+        enabled: yes
+        state: started
+
+- name: Create /home/webserver directory
+  ansible.builtin.file:
+    path: "{{ web_path }}"
+    state: directory
+    owner: nginx
+    group: nginx
+    mode: '0755'
+
+- name: Add index.html to webserver directory
+  ansible.builtin.template:
+    src: templates/index.html.j2
+    dest: "{{ web_path }}/index.html"
+    owner: nginx
+    group: nginx
+    mode: '0644'
+
+- name: Add nginx config based on template
+  ansible.builtin.template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: nginx
+    group: nginx
+    mode: '0644'
+  register: nginx_config
+  notify: Restart nginx

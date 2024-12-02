@@ -1,0 +1,6 @@
+---
+# vars file for add_users
+new_user:
+  - test1
+  - test2
+  - test3
